@@ -488,10 +488,11 @@ const spotifyController = {
     /**
      * Tool function to get the Spotify user's current track and device
      * 
+     * @param {string} username
      * @param {string} spotifyToken
      * @returns {object} Spotify user's current track and device, like {trackURI: 'spotify:track:123456789', device: '123456789'}
      */
-    async _getSpotifyUserCurrentTrack(spotifyToken) {
+    async _getSpotifyUserCurrentTrack(user, spotifyToken) {
         try {
             const url = 'https://api.spotify.com/v1/me/player/currently-playing'
             const headers = {
@@ -504,7 +505,9 @@ const spotifyController = {
     
             const trackURI = response.data.context.uri
             const device = response.data.device.id
+            
             return {
+                user: username,
                 track: trackURI,
                 device
             }
