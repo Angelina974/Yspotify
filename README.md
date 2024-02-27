@@ -9,15 +9,11 @@ Ce service permet une intégration poussée avec Spotify, offrant aux utilisateu
 - **Synchronisation de Groupe** : Le chef de groupe peut synchroniser la lecture de musique sur tous les appareils actifs des membres du groupe.
 - **Création de Playlist** : Création de playlists sur Spotify basées sur les préférences musicales des utilisateurs.
 
-## Débuter
-
-Ces instructions vous aideront à mettre en place le projet en local sur votre machine à des fins de développement et de test. Voir la section déploiement pour des notes sur comment déployer le projet sur un système vivant.
-
-### Déploiement
+## Déploiement
 
 Ce dont vous avez besoin pour installer le service et comment les installer :
 
-`git clone https://github.com/Angelina974/Yspotify`
+`git clone` **[YSpotify](https://github.com/Angelina974/Yspotify)**
 
 `npm install node`
 `npm install express`
@@ -28,16 +24,14 @@ Ce dont vous avez besoin pour installer le service et comment les installer :
 `npm install jsonwebtoken`
 `npm installbcrypt`
 
-### Technologies utilisées lors du projet
+## Technologies utilisées lors du projet
 
 + **[Node](https://nodejs.org/en)** - Environnement d'exécution pour JavaScript
 + **[Express](https://expressjs.com/)** - Infrastructure de l'application web
 + **[Spotify Web API](https://developer.spotify.com/documentation/web-api)** - API pour intégrer les services Spotify
 
+## Auteur
 
-
-### Auteur
-
-** Julia Grossi **
+**Julia Grossi**
 
 
