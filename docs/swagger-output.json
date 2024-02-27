@@ -1,0 +1,123 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Shared Music API",
+    "version": "1.0.0",
+    "description": "API to share music with friends using Spotify."
+  },
+  "paths": {
+    "/login": {
+      "get": {
+        "summary": "LOGIN with Spotify, using OAuth 2.0 protocol.",
+        "description": "Redirects the user to the Spotify login page for authentication.",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to Spotify authentication page."
+          }
+        }
+      }
+    },
+    "/callback": {
+      "get": {
+        "summary": "Manage the redirection after Spotify authentication.",
+        "description": "Handles the callback from Spotify OAuth flow, exchanges code for access token.",
+        "tags": [
+          "Authentication"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "code",
+            "required": true,
+            "description": "The authorization code returned by Spotify.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "description": "The state parameter sent by the client to avoid CSRF.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the access token.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Access Token: your_access_token_here"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error while getting the Spotify token."
+          }
+        }
+      }
+    },
+    "/getUserPersonality": {
+      "get": {
+        "summary": "Get user's music listening personality.",
+        "description": "Analyzes the user's top listened tracks to deduce their musical personality based on various audio features.",
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the user's music listening personality.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "dance": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 10,
+                      "description": "Danceability score on a scale of 1 to 10."
+                    },
+                    "agitation": {
+                      "type": "integer",
+                      "description": "Average tempo of top tracks."
+                    },
+                    "preference": {
+                      "type": "string",
+                      "description": "User's preference for instrumental or vocal tracks."
+                    },
+                    "attitude": {
+                      "type": "string",
+                      "description": "User's overall positivity or negativity in music choice."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No liked songs, personality impossible to define."
+          },
+          "500": {
+            "description": "Error while getting the Spotify songs or audio statistics."
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}

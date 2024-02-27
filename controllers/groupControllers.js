@@ -1,7 +1,10 @@
 /**
- * This file contains the controllers for the group routes
+ * 
+ * AUTHENTICATION CONTROLLERS
+ * 
  */
-const fs = require('fs');
+const db = require('../database/manager')
+const spotifyController = require('./spotifyAPI')
 const log = (txt) => console.log(txt)
 
 const groupControllers = {
@@ -14,10 +17,8 @@ const groupControllers = {
             name
         } = req.body
 
-
-        log("Reading file data.json")
-        const data = JSON.parse(fs.readFileSync('./database/data.json', 'utf8'));
-        const groups = data.groups;
+        const data = db.read()
+        const groups = data.groups
 
         // Test variables
         const groupExist = groups.find(group => group.name === name)
@@ -78,8 +79,7 @@ const groupControllers = {
             }
         }
 
-        // Write the new data to the file
-        fs.writeFileSync('./database/data.json', JSON.stringify(data))
+        db.update(data)
         res.status(200).send('Group successfully joined')
     },
 
@@ -87,21 +87,18 @@ const groupControllers = {
      * GET GROUP LIST
      */
     async getGroupList(req, res) {
-
-        log("Reading file data.json")
-        const data = JSON.parse(fs.readFileSync('./database/data.json', 'utf8'))
+        const data = db.read()
         const groups = data.groups
 
-        // Create a board with the group name and the number of members
+        // Create a group list with the group name and the number of members
         const groupList = groups.map(groups => {
             return {
                 name: groups.name,
                 numberOfUsers: groups.members.length
-            };
-        });
+            }
+        })
 
-        // Return the list of groups
-        res.status(200).json(groupList);
+        res.status(200).json(groupList)
     },
 
     /**
@@ -110,8 +107,7 @@ const groupControllers = {
     async getGroupMembers(req, res) {
         const username = req.username
 
-        log("Reading file data.json")
-        const data = JSON.parse(fs.readFileSync('./database/data.json', 'utf8'))
+        const data = db.read()
         const groups = data.groups
 
         // Find the user's group
@@ -122,19 +118,32 @@ const groupControllers = {
             return res.status(403).send("You don't belong to any group.")
         }
 
-        // Create a board with the username and if the user is the leader
-        const membersList = userGroup.members.map(member => {
+        // Build the list of members and if the user is the leader
+        const membersList = userGroup.members.map(username => {
             return {
-                username: member,
-                isLeader: member === userGroup.leader
-            };
-        });
+                username,
+                isLeader: username === userGroup.leader
+            }
+        })
+
+        // For each user of the group, checks if the user has a Spotify token
+        const spotifyCalls = []
+
+        userGroup.members.forEach(member => {
+            const spotifyToken = db.getUserSpotifyToken(member)
+            if (spotifyToken) {
+                const request = spotifyController._getSpotifyUserCurrentTrack(spotifyToken)
+                spotifyCalls.push(request)
+            }
+        })
+
+        // Wait for all the Spotify calls to be done
+        const spotifyResults = await Promise.all(spotifyCalls)
+        
 
         // Return the list of members
         res.status(200).json(membersList)
     }
-
 }
 
-// Export the controllers to be able to use them in app.js
 module.exports = groupControllers

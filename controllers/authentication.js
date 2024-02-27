@@ -1,13 +1,13 @@
-// Charge les libraries nécessaires:
+/**
+ * 
+ * AUTHENTICATION CONTROLLERS
+ * 
+ */
 require('dotenv').config()
 const bcrypt = require('bcrypt')
-const fs = require('fs')
 const jwt = require('jsonwebtoken')
+const db = require('../database/manager')
 
-// Définit les controlleurs pour les routes
-// Chaque controlleur est une fonction asynchrone qui prend deux paramètres: req et res, qui représentent respectivement la requête et la réponse dans Express
-// Pour simplifier le code, on crée un objet "controllers" qui contient toutes les fonctions de controlleurs (register, login, oAuthLogin, oAuthCallback...)
-// Puis on exporte cet objet à la fin pour pouvoir l'utiliser dans app.js
 const controllers = {
 
   /**
@@ -21,33 +21,26 @@ const controllers = {
       password
     } = req.body;
 
-    // Lecture des utilisateurs depuis le fichier
-    const data = JSON.parse(fs.readFileSync('./database/data.json', 'utf8'))
+    const data = db.read()
     const users = data.users
 
-    // Vérifiez si l'utilisateur existe déjà. Si oui, on sort avec un code d'erreur 400
+    // User exists?
     if (users.find(user => user.username === username)) {
-      return res.status(400).send('Cet utilisateur existe déjà.')
+      return res.status(400).send('This user already exists.')
     }
 
-    // Hashage du mot de passe
+    // Password hash
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    // Enregistrement de l'utilisateur
+    // Save user
     data.users.push({
       username,
       password: hashedPassword
-    });
+    })
 
-    // Ecriture dans le fichier JSON des utilisateurs
-    try {
-      fs.writeFileSync('./database/data.json', JSON.stringify(data))
-    } catch (error) {
-      console.error("Erreur lors de l'écriture dans le fichier :", error)
-      return res.status(500).send('Erreur serveur.')
-    }
+    db.update(data)
 
-    res.status(201).send('Utilisateur enregistré avec succès.')
+    res.status(201).send('User created successfully.')
   },
 
   /**
@@ -61,23 +54,22 @@ const controllers = {
       password
     } = req.body
 
-    // Lecture des utilisateurs depuis le fichier
-    const data = JSON.parse(fs.readFileSync('./database/data.json', 'utf8'))
+    const data = db.read()
     const users = data.users
 
-    // Recherche de l'utilisateur
+    // User exists?
     const user = users.find(user => user.username === username)
     if (!user) {
-      return res.status(400).send('Utilisateur non trouvé.')
+      return res.status(400).send('User not found.')
     }
 
-    // Comparaison du mot de passe
+    // Check password
     const validPassword = await bcrypt.compare(password, user.password)
     if (!validPassword) {
-      return res.status(400).send('Mot de passe incorrect.')
+      return res.status(400).send('Wrong password.')
     }
 
-    // Génération du token d'accès (remplacez YOUR_SECRET_KEY par votre clé secrète)
+    // Generate token
     const token = jwt.sign({
       username: user.username
     }, process.env.JWT_SECRET, {
@@ -90,5 +82,4 @@ const controllers = {
   }
 }
 
-// Exporte les controlleurs pour pouvoir les utiliser dans app.js
 module.exports = controllers

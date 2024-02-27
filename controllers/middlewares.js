@@ -1,11 +1,21 @@
-const fs = require('fs')
+/**
+ * 
+ * MIDDLEWARES
+ * 
+ * Fonctions qui s'exécutent avant les controllers pour :
+ * - enrichir les objets req/res
+ * - vérifier des conditions, comme les tokens
+ * 
+ */
+const db = require('../database/manager')
 const jwt = require('jsonwebtoken')
 
 const middlewares = {
     /**
      * 
      * VERIFY TOKEN
-     * (middleware pour vérifier si l'utilisateur est authentifié)
+     * - Check if the user exists and has a valid token
+     * - add the username to req.username
      * 
      */
     verifyToken(req, res, next) {
@@ -15,8 +25,8 @@ const middlewares = {
             return res.status(403).send('Un token est requis pour l\'authentification');
         }
 
-        // Le token arrive sous la forme "Bearer <token>"
-        // Donc on sépare la chaine de texte en 2 parties à partir de l'espace, et on prend la 2ème partie pour récupérer le token
+        // The token arrives as "Bearer <token"
+        // So we split the string into 2 parts from the space, and take the 2nd part to get the token
         const token = authorization.split(' ')[1]
 
         try {
@@ -26,8 +36,8 @@ const middlewares = {
             return res.status(401).send('Token invalide')
         }
 
-        // Avec Express, appeler "next()" fait passer la requête au prochain controller avec les paramètres req/res modifiés
-        // Dans le cas présent, on ajoute le nom d'utilisateur décodé dans req.username
+        // With Express, calling "next()" passes the request to the next controller with the modified req/res parameters
+        // In this case, we add the decoded username to req.username
         next()
     },
 
@@ -39,25 +49,23 @@ const middlewares = {
     setSpotifyToken(req, res, next) {
         const username = req.username
 
-        // Lecture des utilisateurs depuis le fichier
-        const data = JSON.parse(fs.readFileSync('./database/data.json', 'utf8'))
+        const data = db.read()
         const users = data.users
 
-        // Recherche de l'utilisateur
+        // User exists?
         const user = users.find(user => user.username === username)
         if (!user) {
             return res.status(400).send('Utilisateur non trouvé.')
         }
 
-        // Vérifiez si l'utilisateur a un token Spotify
+        // User has a Spotify token?
         if (!user.spotifyToken) {
             return res.status(400).send("L'utilisateur n'a pas de token Spotify.")
         }
 
-        // Met le token Spotify dans req.spotifyToken pour pouvoir l'utiliser dans le prochain controlleur
+        // Set the token in the req object
         req.spotifyToken = user.spotifyToken
 
-        // Avec Express, appeler "next()" fait passer la requête au prochain controller avec les paramètres req/res modifiés
         next()
     }
 }
