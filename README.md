@@ -16,13 +16,28 @@ Ces instructions vous aideront à mettre en place le projet en local sur votre m
 ### Déploiement
 
 Ce dont vous avez besoin pour installer le service et comment les installer :
-`npm install node
-npm install express
-npm install axios
-npm install fs
-npm install qs
-npm install dotenv
-npm install jsonwebtoken
-npm installbcrypt `
+
+`git clone https://github.com/Angelina974/Yspotify`
+
+`npm install node`
+`npm install express`
+`npm install axios`
+`npm install fs`
+`npm install qs`
+`npm install dotenv`
+`npm install jsonwebtoken`
+`npm installbcrypt`
+
+### Technologies utilisées lors du projet
+
++ **[Node](https://nodejs.org/en)** - Environnement d'exécution pour JavaScript
++ **[Express](https://expressjs.com/)** - Infrastructure de l'application web
++ **[Spotify Web API](https://developer.spotify.com/documentation/web-api)** - API pour intégrer les services Spotify
+
+
+
+### Auteur
+
+** Julia Grossi **
 
 
