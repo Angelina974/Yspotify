@@ -19,21 +19,23 @@ Ce service permet une intégration poussée avec Spotify, offrant aux utilisateu
 
 Ce dont vous avez besoin pour installer le service et comment les installer :
 
-`git clone` **[YSpotify](https://github.com/Angelina974/Yspotify)**
+`git clone` **_https://github.com/Angelina974/Yspotify_**
 
-`npm install node`
-`npm install express`
-`npm install axios`
-`npm install fs`
-`npm install qs`
-`npm install dotenv`
-`npm install jsonwebtoken`
-`npm installbcrypt`
+```
+npm install node
+npm install express
+npm install axios
+npm install fs
+npm install qs
+npm install dotenv
+npm install jsonwebtoken
+npm installbcrypt
+```
 
 ## Configuration
 
 Ajouter un fichier .env à la racine du projet qui stocke le `CLIENT_ID`, `CLIENT_SECRET` et le `REDIRECT_URI`.
-Voici la route que le `REDIRECT_URI` doit avoir : _http://localhost:3000/oAuthCallback_
+Voici la route que le `REDIRECT_URI` doit avoir : **_http://localhost:3000/oAuthCallback_**
 
 ## Technologies utilisées lors du projet
 
