@@ -10,7 +10,58 @@ const log = (txt) => console.log(txt)
 const groupControllers = {
 
     /**
-     * JOINGROUP
+     * JOIN GROUP
+     * 
+     * @swagger
+     * /joinGroup:
+     *   post:
+     *     summary: Rejoindre ou créer un groupe.
+     *     description: Permet à l'utilisateur de rejoindre un groupe spécifié par son nom. Si le groupe n'existe pas, il est créé. Si l'utilisateur était déjà membre d'un autre groupe, il en est retiré.
+     *     tags:
+     *       - Groups
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - name
+     *             properties:
+     *               name:
+     *                 type: string
+     *                 description: Le nom du groupe à rejoindre ou à créer.
+     *     responses:
+     *       200:
+     *         description: Retourne un message confirmant que l'utilisateur a rejoint le groupe avec succès, ou qu'il en était déjà membre.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                   description: Message de succès.
+     *       400:
+     *         description: Requête invalide si des informations requises sont manquantes.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 error:
+     *                   type: string
+     *                   description: Description de l'erreur.
+     *       500:
+     *         description: Erreur serveur si une erreur inattendue survient.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 error:
+     *                   type: string
+     *                   description: Description de l'erreur interne.
      */
     async joinGroup(req, res) {
         const {
@@ -85,6 +136,40 @@ const groupControllers = {
 
     /**
      * GET GROUP LIST
+     * 
+     * @swagger
+     * /getGroupList:
+     *   get:
+     *     summary: Obtenir la liste des groupes.
+     *     description: Retourne une liste de tous les groupes disponibles avec le nom du groupe et le nombre de ses membres.
+     *     tags:
+     *       - Groups
+     *     responses:
+     *       200:
+     *         description: Une liste de groupes avec leurs noms et le nombre de membres.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   name:
+     *                     type: string
+     *                     description: Le nom du groupe.
+     *                   numberOfUsers:
+     *                     type: integer
+     *                     description: Le nombre de membres dans le groupe.
+     *       500:
+     *         description: Erreur serveur si une erreur inattendue survient.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 error:
+     *                   type: string
+     *                   description: Description de l'erreur interne.
      */
     async getGroupList(req, res) {
         const data = db.read()

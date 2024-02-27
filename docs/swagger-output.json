@@ -116,6 +116,168 @@
           }
         }
       }
+    },
+    "/syncCurrentTrack": {
+      "post": {
+        "summary": "Synchronise le morceau actuellement joué avec tous les membres du groupe de l'utilisateur.",
+        "description": "Récupère le morceau actuellement joué par l'utilisateur ainsi que sa progression, puis synchronise ce morceau avec tous les membres du groupe auquel appartient l'utilisateur. Nécessite que l'utilisateur soit authentifié et membre d'un groupe.",
+        "tags": [
+          "Groups",
+          "Music"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "spotifyToken": {
+                    "type": "string",
+                    "description": "Token Spotify de l'utilisateur pour accéder à ses informations de lecture en cours."
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Nom d'utilisateur permettant d'identifier le membre et son groupe."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Retourne le résultat des appels API pour la synchronisation des morceaux chez les membres du groupe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "description": "Statut de la réponse de l'API Spotify pour chaque membre du groupe."
+                      },
+                      "message": {
+                        "type": "string",
+                        "description": "Message détaillant le résultat de l'opération de synchronisation pour chaque membre."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Le user n'appartient à aucun groupe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Description de l'erreur."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erreur lors de la synchronisation du morceau actuel avec les membres du groupe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Description de l'erreur interne."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/createPlaylistFromUserTopTracks": {
+      "post": {
+        "summary": "Crée une playlist à partir des morceaux les plus écoutés d'un autre utilisateur.",
+        "description": "Récupère les 10 morceaux les plus écoutés d'un utilisateur spécifié et crée une nouvelle playlist dans le compte Spotify de l'utilisateur actuel contenant ces morceaux.",
+        "tags": [
+          "Playlists",
+          "Music"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "username",
+            "required": true,
+            "description": "Nom d'utilisateur du compte Spotify dont les top morceaux seront utilisés pour créer la playlist.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tracks added successfully to the playlist!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User or spotify token not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Description de l'erreur."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error while getting the user's top tracks or creating a playlist from them.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Description de l'erreur interne."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {},

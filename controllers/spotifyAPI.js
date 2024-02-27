@@ -492,20 +492,26 @@ const spotifyController = {
      * @returns {object} Spotify user's current track and device, like {trackURI: 'spotify:track:123456789', device: '123456789'}
      */
     async _getSpotifyUserCurrentTrack(spotifyToken) {
-        const url = 'https://api.spotify.com/v1/me/player/currently-playing'
-        const headers = {
-            'Authorization': 'Bearer ' + spotifyToken
+        try {
+            const url = 'https://api.spotify.com/v1/me/player/currently-playing'
+            const headers = {
+                'Authorization': 'Bearer ' + spotifyToken
+            }
+    
+            const response = await axios.get(url, {
+                headers
+            })
+    
+            const trackURI = response.data.context.uri
+            const device = response.data.device.id
+            return {
+                track: trackURI,
+                device
+            }
         }
-
-        const response = await axios.get(url, {
-            headers
-        })
-
-        const trackURI = response.data.context.uri
-        const device = response.data.device.id
-        return {
-            track: trackURI,
-            device
+        catch(err) {
+            log("Error while getting the user's current track")
+            return false
         }
     }
 }
