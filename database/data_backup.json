@@ -1,0 +1,20 @@
+{
+    "groups": [{
+        "name": "GroupeA",
+        "leader": "Julia974",
+        "members": ["Julia974", "juju2"]
+    }, {
+        "name": "Hackers",
+        "leader": "bob",
+        "members": ["bob"]
+    }],
+    "users": [{
+        "username": "Julia974",
+        "password": "$2b$10$ugbYD4x0UX5tDd0m9mCNR.dsc9OacgZSh2WWYYaYe52whiaRDRxgO",
+        "spotifyToken": "BQB1jaTYpeC-jHF4dLamEy7uQGJu01fFdQSIiOhOCprhU7UqRK9uIXosi3ItfvXtkT_M8yKxjfqauDtn0C70hkuHTTqIoVghW7Q4sCx6VINwB9mQjMmpJdoxMkW-dKrLGGRELsjOByqKseHzY84o7Us--Qn0JpH9_lN_huMHmEqXOADRVhe1cdloN-7-bRdmTVQ8nV-tc0SiiQne1nuYy8ThU2w"
+    }, {
+        "username": "bob",
+        "password": "$2b$10$hTo/0iuYDnmykWJBYdKsyexQ6LFy1v4KecQadIUjTx24S7ogcC84K",
+        "spotifyToken": ""
+    }]
+}
