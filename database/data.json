@@ -1,17 +1,21 @@
 {
     "groups": [{
         "name": "GroupeA",
-        "leader": "Julia974",
-        "members": ["Julia974", "David"]
+        "leader": "David",
+        "members": ["David", "Julia974"]
     }, {
         "name": "Hackers",
         "leader": "bob",
         "members": ["bob"]
+    }, {
+        "name": "Potatoes",
+        "leader": "Juju",
+        "members": ["Juju"]
     }],
     "users": [{
         "username": "Julia974",
         "password": "$2b$10$ugbYD4x0UX5tDd0m9mCNR.dsc9OacgZSh2WWYYaYe52whiaRDRxgO",
-        "spotifyToken": "BQAJBKMvbDQWsUD55c6G25vC22MnRSomvjrNes2ueRvYM9Zk8gI4pLuKCEUf-Jxu8hSCV4U6HKE85q2Y0xT7C-uBTur2Qre45agPqMvAc0okGnlu-gRtsaBadtJta6_nto9-CWsvgqpy1cfWQaFjXyYFt9KSteIjHACYnL_08TLWZxGuXiYzzYEU0M29cyrqOKph9bzdujda-FxvehmOCEGKLEzLUDfNUYGvpdqyKcQVDuE2LFKnjG4Ne7oWwcfNVAF0SVowXqDWWldB8nYruVx7LEvp1jHx7pHl6i0"
+        "spotifyToken": "BQCMk50dSg63e3n24lzz4Kx3Oz9MZyJG7a4BWFDEDTp_26RROhjSv00LfZ8OLrlujyrqnOEY5NMokEYSs8OIZNL83exiFewJYs27eql_TjAAvH9An0fMlv70j4Y4H_pIhptlu0emQRX_o9imtooNR6zG-to7NmiruPQ0p8hJCGfPsic_esGsB0Kt8PSntaFebvemepOLufji3Vf1DMMlS_bGucgUxZOGjVP21GJ_sSYNzVJtZHmDdHkNSO8uTrvO3IDOTrWLZBrni_AeRbQIPMKeCnECcEKxjKX7z4o"
     }, {
         "username": "bob",
         "password": "$2b$10$hTo/0iuYDnmykWJBYdKsyexQ6LFy1v4KecQadIUjTx24S7ogcC84K",
@@ -19,10 +23,26 @@
     }, {
         "username": "David",
         "password": "$2b$10$3UYZlT5MolKKdbTtY9jC8e2WChE1NVFENpeasDN/PKkHp3n7LIyr6",
-        "spotifyToken": "BQDphdYoXU3Ghwk6pGu9F-JjeEje9J1e559x4_cIBOaWnH2UPwqMUVUVr9e7P3L2zokD-HUgqP17IeNB-gWP8QY-TXpdrYBgVfdfyHxwVu70I5_9EhgjCDkWtAO0Z3onV21GLIV7AdJcAMsqsqOTRiy7HuSWLed12KQvYtbavFy_LHUEPSzSJiAJProASviXKUNvsXzUzqsqB8H3O2KJutUdHHoRvbab7XwQPl89t2XghfDA1u6gR3C2aRZaULBomvzQufhvyQ"
+        "spotifyToken": "BQCAIgCYjr2mxp47Qk4zegUMU_eLMMFkX6ctAxTlx1ox0DNjTrGarb2MUo8dfMZOpYJTBcr-aKMVq1biR9T_UGUyzFD1-QVtPE1ldhokZzw2bkNhitQ-MPQvoz4lmt_R9o3GrKuEz_qSwASkc637mKQXksrofAQSTCgmyNiGCu4Pp9yKgqvQ9DqKqbhViHLwhumLFDMGNyZQAmES8uk9-GP9B0aYu-Hqrgws9iIMuTsN9yrwYMC6Aij6gYS6l-CsNN_YdeklJmGXdQtRCjkC2DxVOl3ZmQyQgyodGvU"
     }, {
         "username": "rené",
         "password": "$2b$10$X2u4LP6dDX1aR5zph4gUQORLco7Fi55A9YXYSLGF6v7PxlmiExSxG",
         "spotifyToken": ""
-    }]
+    }, {
+        "username": "Joe Dalton",
+        "password": "$2b$10$cFsHVHT4C.P5y.L47Hgp8uP6AJuAX1EYCds.GdNw4WkBa1G0knU2G"
+    }, {
+        "username": "Ziggy Stardust",
+        "password": "$2a$10$cyW6UsfgOAt/oLjW9oZhU.geJfrjZd3cWmBT8WETRCTdAyhyctGnS"
+    }, {
+        "username": "Juju",
+        "password": "$2a$10$LSkrXXckdiOZeM/BlIMF7eSWMer58DDDeygpKxUXW8IG4j7X5tG.y",
+        "spotifyToken": "BQAB_cvGCeBFWj9urUl6VjduS1BdBnukkMI5XYLXr7KV6UWP_-hm3WjHzq9QRXcrGYaFYQ8a4QusiOmBraZpo-AkXZIs3GwqIuXC9EeLKDAOHcs7t5ZVSTnuL5lF9QoxNNpXKk9BhCM9RscibhTxKKB5ve_3zJ8l_p2OvlPDizKpp9pdxgGSAJuEr_XmNPpbC6jNFGakw2cysQ9CyAfoaaFDNVwV7bD9xUfmLagyW11XLr78D9_SQXMjyG6SoN3tCmi7L3OFIY-Pa6fPGu6EChzUtB05MMFyAGB7sys"
+    },
+    {
+        "username": "Pierre",
+        "password": "123",
+        "spotifyToken": "BQCmgRbZ15HmnQn-OmXgF25p4kkGa78graSCwXgvOGkhZz2oBENmFGPg6Uevy2FIG-_BeWAjIYppjCRSloEJ_zDJccvYdaag6MHY7HL7ia74IBfQ7lhAyxBslrtrS2T3UO61C6XFF3iN5d6wIPubVsJN_E72c2O1RkO0YpnN2885h8EVLRNFNhUrCzYuj8Ihl8z8PMoZNgH3yjfbzyYeHzlGhcejEwUbGeoNC9WuKoNxejmya4ZbI_yOe3CGHcuztJO45T2JgE02uM5L5tz1H01_oacFCjbUK8E9vNQ"
+    }
+]
 }

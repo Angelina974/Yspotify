@@ -5,17 +5,275 @@
     "version": "1.0.0",
     "description": "API to share music with friends using Spotify."
   },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
   "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register a new user.",
+        "description": "Allows a new user to register, creating a new user record in the database.",
+        "tags": [
+          "Registration"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "The user's username."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The user's password."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully."
+          },
+          "400": {
+            "description": "This user already exists."
+          }
+        }
+      }
+    },
     "/login": {
-      "get": {
-        "summary": "LOGIN with Spotify, using OAuth 2.0 protocol.",
-        "description": "Redirects the user to the Spotify login page for authentication.",
+      "post": {
+        "summary": "Authenticate a user and return a token.",
+        "description": "Verifies user's credentials and returns a JWT token for authenticated sessions.",
         "tags": [
           "Authentication"
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "The user's username."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The user's password."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful, JWT token returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "JWT token for the authenticated session."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User not found or wrong password."
+          }
+        }
+      }
+    },
+    "/joinGroup": {
+      "post": {
+        "summary": "Join or create a group.",
+        "description": "Allows the user to join a group specified by its name. If the group does not exist, it is created. If the user was already a member of another group, he is removed from it.",
+        "tags": [
+          "Groups"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the group to join or create."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a message confirming that the user has successfully joined the group, or that he was already a member of it."
+          },
+          "400": {
+            "description": "Invalid request if the group name is missing."
+          },
+          "500": {
+            "description": "Error server if an unexpected error occurs."
+          }
+        }
+      }
+    },
+    "/getGroupList": {
+      "get": {
+        "summary": "Obtain a list of all available groups.",
+        "description": "returns a list of groups with their names and the number of members.",
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of groups with their names and the number of members.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the group."
+                      },
+                      "numberOfUsers": {
+                        "type": "integer",
+                        "description": "The number of members in the group."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error server if an unexpected error occurs."
+          }
+        }
+      }
+    },
+    "/getGroupMembers": {
+      "get": {
+        "summary": "Obtain a list of all members of the group to which the current user belongs.",
+        "description": "Returns a list of all members of the group to which the current user belongs, including information about being the leader of the group, and the currently listened Spotify track for each member if they are connected to Spotify and currently playing.",
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of all members of the group to which the current user belongs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "username": {
+                        "type": "string",
+                        "description": "The username of the member."
+                      },
+                      "isLeader": {
+                        "type": "boolean",
+                        "description": "Tells if the member is the leader of the group."
+                      },
+                      "currentTrack": {
+                        "type": "string",
+                        "description": "The song currently played by the member on Spotify, if available."
+                      },
+                      "device": {
+                        "type": "string",
+                        "description": "The device currently used by the member on Spotify, if available."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The user does not belong to any group."
+          }
+        }
+      }
+    },
+    "/oAuthLogin": {
+      "get": {
+        "summary": "LOGIN with Spotify, using OAuth 2.0 protocol.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Redirects the user to the Spotify login page for authentication.",
+        "tags": [
+          "Spotify OAuth authentication"
+        ],
         "responses": {
           "302": {
-            "description": "Redirect to Spotify authentication page."
+            "description": "Redirect to Spotify authentication page.",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "https://accounts.spotify.com/authorize"
+              }
+            }
           }
         }
       }
@@ -25,7 +283,7 @@
         "summary": "Manage the redirection after Spotify authentication.",
         "description": "Handles the callback from Spotify OAuth flow, exchanges code for access token.",
         "tags": [
-          "Authentication"
+          "Spotify OAuth authentication"
         ],
         "parameters": [
           {
@@ -41,7 +299,7 @@
             "in": "query",
             "name": "state",
             "required": false,
-            "description": "The state parameter sent by the client to avoid CSRF.",
+            "description": "The state parameter sent by the client to avoid CSRF. In our case, we use the state to pass the username of the user who initiated the OAuth flow.",
             "schema": {
               "type": "string"
             }
@@ -70,7 +328,7 @@
         "summary": "Get user's music listening personality.",
         "description": "Analyzes the user's top listened tracks to deduce their musical personality based on various audio features.",
         "tags": [
-          "User"
+          "Spotify features"
         ],
         "security": [
           {
@@ -118,41 +376,20 @@
       }
     },
     "/syncCurrentTrack": {
-      "post": {
-        "summary": "Synchronise le morceau actuellement joué avec tous les membres du groupe de l'utilisateur.",
-        "description": "Récupère le morceau actuellement joué par l'utilisateur ainsi que sa progression, puis synchronise ce morceau avec tous les membres du groupe auquel appartient l'utilisateur. Nécessite que l'utilisateur soit authentifié et membre d'un groupe.",
+      "get": {
+        "summary": "Synchronize the track currently played with all the members of the user's group.",
+        "description": "Get the user's current track and its progress, then sync this track with all the members of the user's group. Requires the user to be authenticated and a member of a group.",
         "tags": [
-          "Groups",
-          "Music"
+          "Spotify features"
         ],
         "security": [
           {
             "bearerAuth": []
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "spotifyToken": {
-                    "type": "string",
-                    "description": "Token Spotify de l'utilisateur pour accéder à ses informations de lecture en cours."
-                  },
-                  "username": {
-                    "type": "string",
-                    "description": "Nom d'utilisateur permettant d'identifier le membre et son groupe."
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "Retourne le résultat des appels API pour la synchronisation des morceaux chez les membres du groupe.",
+            "description": "Returns the result of the API calls for the track synchronization with the group members.",
             "content": {
               "application/json": {
                 "schema": {
@@ -160,13 +397,13 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "status": {
+                      "user": {
                         "type": "string",
-                        "description": "Statut de la réponse de l'API Spotify pour chaque membre du groupe."
+                        "description": "Username of the user for which the API call was made."
                       },
-                      "message": {
-                        "type": "string",
-                        "description": "Message détaillant le résultat de l'opération de synchronisation pour chaque membre."
+                      "success": {
+                        "type": "boolean",
+                        "description": "true if the API call was successful, false otherwise."
                       }
                     }
                   }
@@ -175,54 +412,27 @@
             }
           },
           "400": {
-            "description": "Le user n'appartient à aucun groupe.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Description de l'erreur."
-                    }
-                  }
-                }
-              }
-            }
+            "description": "The user is not part of any group."
           },
           "500": {
-            "description": "Erreur lors de la synchronisation du morceau actuel avec les membres du groupe.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Description de l'erreur interne."
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Error while syncing the current track with the group members."
           }
         }
       }
     },
     "/createPlaylistFromUserTopTracks": {
-      "post": {
-        "summary": "Crée une playlist à partir des morceaux les plus écoutés d'un autre utilisateur.",
-        "description": "Récupère les 10 morceaux les plus écoutés d'un utilisateur spécifié et crée une nouvelle playlist dans le compte Spotify de l'utilisateur actuel contenant ces morceaux.",
+      "get": {
+        "summary": "Create a playlist from another user's top tracks.",
+        "description": "Get the top 10 tracks of a specified Spotify user and create a new playlist in the current user's Spotify account containing these tracks.",
         "tags": [
-          "Playlists",
-          "Music"
+          "Spotify features"
         ],
         "parameters": [
           {
             "in": "query",
             "name": "username",
             "required": true,
-            "description": "Nom d'utilisateur du compte Spotify dont les top morceaux seront utilisés pour créer la playlist.",
+            "description": "Username of the Spotify user from which to get the top tracks.",
             "schema": {
               "type": "string"
             }
@@ -235,51 +445,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Tracks added successfully to the playlist!",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
+            "description": "Tracks added successfully to the playlist!"
           },
           "400": {
-            "description": "User or spotify token not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Description de l'erreur."
-                    }
-                  }
-                }
-              }
-            }
+            "description": "User or spotify token not found."
           },
           "500": {
-            "description": "Error while getting the user's top tracks or creating a playlist from them.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Description de l'erreur interne."
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Error while getting the user's top tracks or creating a playlist from them."
           }
         }
       }
     }
   },
-  "components": {},
   "tags": []
 }

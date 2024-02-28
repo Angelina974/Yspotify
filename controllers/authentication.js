@@ -4,16 +4,42 @@
  * 
  */
 require('dotenv').config()
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('../database/manager')
 
 const controllers = {
 
   /**
-   * 
    * REGISTER
    * 
+   * @swagger
+   * /register:
+   *   post:
+   *     summary: Register a new user.
+   *     description: Allows a new user to register, creating a new user record in the database.
+   *     tags: [Registration]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - username
+   *               - password
+   *             properties:
+   *               username:
+   *                 type: string
+   *                 description: The user's username.
+   *               password:
+   *                 type: string
+   *                 description: The user's password.
+   *     responses:
+   *       201:
+   *         description: User created successfully.
+   *       400:
+   *         description: This user already exists.
    */
   async register(req, res) {
     const {
@@ -43,10 +69,45 @@ const controllers = {
     res.status(201).send('User created successfully.')
   },
 
+
   /**
-   * 
    * LOGIN
    * 
+   * @swagger
+   * /login:
+   *   post:
+   *     summary: Authenticate a user and return a token.
+   *     description: Verifies user's credentials and returns a JWT token for authenticated sessions.
+   *     tags: [Authentication]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - username
+   *               - password
+   *             properties:
+   *               username:
+   *                 type: string
+   *                 description: The user's username.
+   *               password:
+   *                 type: string
+   *                 description: The user's password.
+   *     responses:
+   *       200:
+   *         description: Authentication successful, JWT token returned.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 token:
+   *                   type: string
+   *                   description: JWT token for the authenticated session.
+   *       400:
+   *         description: User not found or wrong password.
    */
   async login(req, res) {
     const {

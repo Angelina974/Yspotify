@@ -12,14 +12,21 @@ const spotifyController = {
      * LOGIN with Spotify, using OAuth 2.0 protocol
      * 
      * @swagger
-     * /login:
+     * /oAuthLogin:
      *   get:
      *     summary: LOGIN with Spotify, using OAuth 2.0 protocol.
+     *     security:
+     *      - bearerAuth: []
      *     description: Redirects the user to the Spotify login page for authentication.
-     *     tags: [Authentication]
+     *     tags: [Spotify OAuth authentication]
      *     responses:
      *       302:
      *         description: Redirect to Spotify authentication page.
+     *         headers:
+     *           Location:
+     *             schema:
+     *               type: string
+     *             description: https://accounts.spotify.com/authorize
      */
     async oAuthLogin(req, res) {
         const username = req.username
@@ -41,7 +48,7 @@ const spotifyController = {
      *   get:
      *     summary: Manage the redirection after Spotify authentication.
      *     description: Handles the callback from Spotify OAuth flow, exchanges code for access token.
-     *     tags: [Authentication]
+     *     tags: [Spotify OAuth authentication]
      *     parameters:
      *       - in: query
      *         name: code
@@ -52,7 +59,7 @@ const spotifyController = {
      *       - in: query
      *         name: state
      *         required: false
-     *         description: The state parameter sent by the client to avoid CSRF.
+     *         description: The state parameter sent by the client to avoid CSRF. In our case, we use the state to pass the username of the user who initiated the OAuth flow.
      *         schema:
      *           type: string
      *     responses:
@@ -101,7 +108,7 @@ const spotifyController = {
      *     summary: Get user's music listening personality.
      *     description: Analyzes the user's top listened tracks to deduce their musical personality based on various audio features.
      *     tags:
-     *       - User
+     *       - Spotify features
      *     security:
      *       - bearerAuth: []
      *     responses:
@@ -189,30 +196,16 @@ const spotifyController = {
      * 
      * @swagger
      * /syncCurrentTrack:
-     *   post:
-     *     summary: Synchronise le morceau actuellement joué avec tous les membres du groupe de l'utilisateur.
-     *     description: Récupère le morceau actuellement joué par l'utilisateur ainsi que sa progression, puis synchronise ce morceau avec tous les membres du groupe auquel appartient l'utilisateur. Nécessite que l'utilisateur soit authentifié et membre d'un groupe.
+     *   get:
+     *     summary: Synchronize the track currently played with all the members of the user's group.
+     *     description: Get the user's current track and its progress, then sync this track with all the members of the user's group. Requires the user to be authenticated and a member of a group.
      *     tags:
-     *       - Groups
-     *       - Music
+     *       - Spotify features
      *     security:
-     *       - bearerAuth: []
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/json:
-     *           schema:
-     *             type: object
-     *             properties:
-     *               spotifyToken:
-     *                 type: string
-     *                 description: Token Spotify de l'utilisateur pour accéder à ses informations de lecture en cours.
-     *               username:
-     *                 type: string
-     *                 description: Nom d'utilisateur permettant d'identifier le membre et son groupe.
+     *      - bearerAuth: []
      *     responses:
      *       200:
-     *         description: Retourne le résultat des appels API pour la synchronisation des morceaux chez les membres du groupe.
+     *         description: Returns the result of the API calls for the track synchronization with the group members.
      *         content:
      *           application/json:
      *             schema:
@@ -220,32 +213,16 @@ const spotifyController = {
      *               items:
      *                 type: object
      *                 properties:
-     *                   status:
+     *                   user:
      *                     type: string
-     *                     description: Statut de la réponse de l'API Spotify pour chaque membre du groupe.
-     *                   message:
-     *                     type: string
-     *                     description: Message détaillant le résultat de l'opération de synchronisation pour chaque membre.
+     *                     description: Username of the user for which the API call was made.
+     *                   success:
+     *                     type: boolean
+     *                     description: true if the API call was successful, false otherwise.
      *       400:
-     *         description: Le user n'appartient à aucun groupe.
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 error:
-     *                   type: string
-     *                   description: Description de l'erreur.
+     *         description: The user is not part of any group.
      *       500:
-     *         description: Erreur lors de la synchronisation du morceau actuel avec les membres du groupe.
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 error:
-     *                   type: string
-     *                   description: Description de l'erreur interne.
+     *         description: Error while syncing the current track with the group members.
      */
     async syncCurrentTrack(req, res) {
         try {
@@ -311,17 +288,16 @@ const spotifyController = {
      * 
      * @swagger
      * /createPlaylistFromUserTopTracks:
-     *   post:
-     *     summary: Crée une playlist à partir des morceaux les plus écoutés d'un autre utilisateur.
-     *     description: Récupère les 10 morceaux les plus écoutés d'un utilisateur spécifié et crée une nouvelle playlist dans le compte Spotify de l'utilisateur actuel contenant ces morceaux.
+     *   get:
+     *     summary: Create a playlist from another user's top tracks.
+     *     description: Get the top 10 tracks of a specified Spotify user and create a new playlist in the current user's Spotify account containing these tracks.
      *     tags:
-     *       - Playlists
-     *       - Music
+     *       - Spotify features
      *     parameters:
      *       - in: query
      *         name: username
      *         required: true
-     *         description: Nom d'utilisateur du compte Spotify dont les top morceaux seront utilisés pour créer la playlist.
+     *         description: Username of the Spotify user from which to get the top tracks.
      *         schema:
      *           type: string
      *     security:
@@ -329,30 +305,10 @@ const spotifyController = {
      *     responses:
      *       200:
      *         description: Tracks added successfully to the playlist!
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: string
      *       400:
      *         description: User or spotify token not found.
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 error:
-     *                   type: string
-     *                   description: Description de l'erreur.
      *       500:
      *         description: Error while getting the user's top tracks or creating a playlist from them.
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 error:
-     *                   type: string
-     *                   description: Description de l'erreur interne.
      */
     async createPlaylistFromUserTopTracks(req, res) {
         try {
@@ -492,7 +448,7 @@ const spotifyController = {
      * @param {string} spotifyToken
      * @returns {object} Spotify user's current track and device, like {trackURI: 'spotify:track:123456789', device: '123456789'}
      */
-    async _getSpotifyUserCurrentTrack(user, spotifyToken) {
+    async _getSpotifyUserCurrentTrack(username, spotifyToken) {
         try {
             const url = 'https://api.spotify.com/v1/me/player/currently-playing'
             const headers = {
@@ -502,10 +458,10 @@ const spotifyController = {
             const response = await axios.get(url, {
                 headers
             })
-    
+
             const trackURI = response.data.context.uri
-            const device = response.data.device.id
-            
+            const device = (response.data.device) ? response.data.device : "No device available"
+
             return {
                 user: username,
                 track: trackURI,
@@ -513,7 +469,7 @@ const spotifyController = {
             }
         }
         catch(err) {
-            log("Error while getting the user's current track")
+            console.log("Error while getting the user's current track for the user: " + username)
             return false
         }
     }

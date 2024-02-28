@@ -13,8 +13,22 @@ const options = {
         info: {
             title: 'Shared Music API',
             version: '1.0.0',
-            description: 'API to share music with friends using Spotify.',
+            description: 'API to share music with friends using Spotify.'
         },
+        components: {
+            // Definition of the security scheme
+            securitySchemes: { 
+                bearerAuth: { // Name of the security scheme, can be referenced in the security array of the route
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT' // Incidates that the token is a JWT
+                }
+            }
+        },
+
+        security: [{
+            bearerAuth: [], 
+          }],
     },
     apis: ['./controllers/*.js']
 }
