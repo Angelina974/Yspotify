@@ -2,9 +2,9 @@
  * 
  * MIDDLEWARES
  * 
- * Fonctions qui s'exécutent avant les controllers pour :
- * - enrichir les objets req/res
- * - vérifier des conditions, comme les tokens
+ * Functions that run before the controllers to:
+ * - enrich the req/res objects
+ * - check conditions, such as tokens
  * 
  */
 const db = require('../database/manager')
@@ -22,7 +22,7 @@ const middlewares = {
         const authorization = req.headers['authorization']
 
         if (!authorization) {
-            return res.status(403).send('Un token est requis pour l\'authentification');
+            return res.status(403).send('No token provided')
         }
 
         // The token arrives as "Bearer <token"
@@ -33,7 +33,7 @@ const middlewares = {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
             req.username = decoded.username
         } catch (err) {
-            return res.status(401).send('Token invalide')
+            return res.status(401).send('Invalid token')
         }
 
         // With Express, calling "next()" passes the request to the next controller with the modified req/res parameters
@@ -55,12 +55,12 @@ const middlewares = {
         // User exists?
         const user = users.find(user => user.username === username)
         if (!user) {
-            return res.status(400).send('Utilisateur non trouvé.')
+            return res.status(400).send('User not found.')
         }
 
         // User has a Spotify token?
         if (!user.spotifyToken) {
-            return res.status(400).send("L'utilisateur n'a pas de token Spotify.")
+            return res.status(400).send("user doesn't have a Spotify token.")
         }
 
         // Set the token in the req object

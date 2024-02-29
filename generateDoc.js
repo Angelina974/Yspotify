@@ -13,7 +13,7 @@ const options = {
         info: {
             title: 'Shared Music API',
             version: '1.0.0',
-            description: 'API to share music with friends using Spotify.'
+            description: 'API to share music with friends using Spotify API.'
         },
         components: {
             // Definition of the security scheme

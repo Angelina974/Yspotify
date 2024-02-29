@@ -143,30 +143,6 @@ docker run -d -p 3000:3000 shared-music-with-spotify
 
 Pour voir si l'application répond, vous pouvez tester l'adresse: http://localhost:3000/docs
 
-## Configuration de reverse proxy
-
-Pour faire tourner le service derrière un reverse proxy, nous proposons l'utilisation de NGINX.
-Dans ce cas, modifier la configuration de NGINX, au niveau du fichier de config /etc/nginx/nginx.conf (Windows) ou /etc/nginx/sites-available/ (Linux) :
-
-```
-server {
-    listen 80;
-    server_name localhost;
-
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
-
-De cette manière, le traffic http adressé au port 80 sera redirigé sur le port 3000 du serveur situé derrière le proxy.
-
-
 ## Auteur
 
 **Julia Grossi**
